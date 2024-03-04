@@ -158,51 +158,64 @@ const Coral = () => {
 
   return (
     <div className="h-screen w-screen relative">
-      <textarea
-        autofocus
-        className="p-2 block w-screen h-5/6 uppercase text-7xl tracking-2 font-mono outline-none"
-        style={{
-          backgroundColor: hsl.str,
-          color: hsl.textColor.str,
-        }}
-        ref={textareaRef}
-        onInput={onInputChange}
-        onKeyDown={onKeyDown}
-        onKeyUp={onKeyUp}
-        onMouseUp={onMouseUp}
-        onScroll={(ev) => {
-          if (textareaOverlayRef.current) {
-            textareaOverlayRef.current.scrollTop = ev.currentTarget.scrollTop;
-          }
-        }}
-        value={val}
-      ></textarea>
-      <div
-        style={{
-          overflowWrap: 'break-word',
-          whiteSpace: 'pre-wrap',
-        }}
-        ref={textareaOverlayRef}
-        class="pointer-events-none p-2 absolute top-0 w-screen h-5/6 uppercase font-mono tracking-2 text-7xl overflow-auto"
-      >
-        <span className="text-transparent">
-          {val.slice(0, caretPosition || 0)}
-          <span
-            style={{
-              color: hsl.textColor.str,
-            }}
-            className="relative opacity-50"
-          >
-            _
+      <div class="absolute top-0 h-5/6 w-10 flex flex-col items-stretch whitespace-nowrap">
+        {Object.keys(colors).map((colorKey) => {
+          return (
+            <div
+              key={colorKey}
+              class="flex-grow"
+              style={{ backgroundColor: colors[colorKey].str }}
+            ></div>
+          );
+        })}
+      </div>
+      <div class="w-screen relative h-5/6 pl-10">
+        <textarea
+          autofocus
+          className="p-2 block w-full h-full uppercase text-7xl tracking-2 font-mono outline-none"
+          style={{
+            backgroundColor: hsl.str,
+            color: hsl.textColor.str,
+          }}
+          ref={textareaRef}
+          onInput={onInputChange}
+          onKeyDown={onKeyDown}
+          onKeyUp={onKeyUp}
+          onMouseUp={onMouseUp}
+          onScroll={(ev) => {
+            if (textareaOverlayRef.current) {
+              textareaOverlayRef.current.scrollTop = ev.currentTarget.scrollTop;
+            }
+          }}
+          value={val}
+        ></textarea>
+        <div
+          style={{
+            overflowWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+          }}
+          ref={textareaOverlayRef}
+          class="pointer-events-none p-2 absolute left-10 top-0 right-0 bottom-0 uppercase font-mono tracking-2 text-7xl overflow-auto"
+        >
+          <span className="text-transparent">
+            {val.slice(0, caretPosition || 0)}
             <span
               style={{
-                backgroundColor: hsl.textColor.str,
-                borderColor: hsl.textColor.darker.str,
+                color: hsl.textColor.str,
               }}
-              class="block absolute inset-0 border-l-4 border-2 border-black border-solid rounded-md"
-            ></span>
+              className="relative opacity-50"
+            >
+              _
+              <span
+                style={{
+                  backgroundColor: hsl.textColor.str,
+                  borderColor: hsl.textColor.darker.str,
+                }}
+                class="block absolute inset-0 border-l-4 border-2 border-black border-solid rounded-md"
+              ></span>
+            </span>
           </span>
-        </span>
+        </div>
       </div>
       <div
         className="h-1/6 text-white text-6xl flex items-center px-8 uppercase overflow-hidden"
