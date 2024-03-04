@@ -1,15 +1,13 @@
 import { JSX } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
-import { letters, emojis, colors } from './config';
+import { letters, emojis, colors, adaptLetter } from './config';
 import { useSpeech } from './lib/speech';
-// import { GenericEventHandler } from 'jsx';
 
 const Coral = () => {
   const { speak } = useSpeech('es-AR');
 
   const [val, setVal] = useState('CORAL');
   const [color, setColor] = useState<string>('rojo');
-  const [colorHue, setColorHue] = useState(0);
   const [lastLetter, setLastLetter] = useState('');
   const [lastLetterTimeout, setLastLetterTimeout] = useState<ReturnType<typeof setTimeout> | null>(
     null,
@@ -40,6 +38,23 @@ const Coral = () => {
     if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
     let key = ev.key.toLowerCase();
 
+    async function speakSingleLetter(letter: string) {
+      setLastLetter(letter);
+
+      if (lastLetterTimeout) {
+        clearTimeout(lastLetterTimeout);
+      }
+      setShowLetterDisplay(true);
+      setLastLetterTimeout(
+        setTimeout(() => {
+          setShowLetterDisplay(false);
+        }, 3000),
+      );
+
+      const adaptedLetter = adaptLetter(letter);
+      await speak(`${adaptedLetter}, de ${letters[letter]}`);
+    }
+
     if (key === 'Escape') {
       if (val !== '') {
         setVal('');
@@ -55,41 +70,24 @@ const Coral = () => {
       speak('espacio');
     } else if (key === 'tab') {
       return;
-    } else if (key === 'Enter') {
+    } else if (key === 'enter') {
       const lines = ev.target.value.split('\n');
       const filledLines = lines.filter((l) => l.trim().length > 0);
       const lastLine = filledLines.pop();
       if (lastLine) {
-        setShowLetterDisplay(false);
-        await speak(lastLine);
+        const dLastLine = lastLine.toLowerCase();
+        console.log('LAST LINIE', dLastLine, dLastLine.length);
+        if (letters[dLastLine]) {
+          await speakSingleLetter(dLastLine);
+        } else {
+          setShowLetterDisplay(false);
+          await speak(dLastLine);
+        }
       }
     } else if (letters[key]) {
-      setLastLetter(key);
-
-      if (lastLetterTimeout) {
-        clearTimeout(lastLetterTimeout);
-      }
-      setShowLetterDisplay(true);
-      setLastLetterTimeout(
-        setTimeout(() => {
-          setShowLetterDisplay(false);
-        }, 3000),
-      );
-
-      let modifiedLetter = key;
-      if (key === 'b') {
-        modifiedLetter = 'be larga';
-      } else if (key === 'v') {
-        modifiedLetter = 've corta';
-      } else if (key === 'w') {
-        modifiedLetter = 'doblebé';
-      } else if (key === 'y') {
-        modifiedLetter = 'y griega';
-      }
-
-      await speak(`${modifiedLetter}, de ${letters[key]}`);
+      await speakSingleLetter(key);
     } else {
-      await speak(key);
+      return;
     }
   }
 
@@ -98,7 +96,7 @@ const Coral = () => {
   return (
     <div className="h-screen w-screen">
       <textarea
-        className="p-2 block w-screen h-5/6 uppercase text-7xl tracking-2 "
+        className="p-2 block w-screen h-5/6 uppercase text-7xl tracking-2 font-mono"
         style={{
           backgroundColor: hsl.str,
           color: hsl.textColor.str,

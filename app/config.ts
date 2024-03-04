@@ -1,3 +1,5 @@
+import Hsl from './lib/Hsl';
+
 export const letters: { [key: string]: string } = {
   a: 'abuela',
   b: 'barco',
@@ -56,28 +58,6 @@ export const emojis: { [key: string]: string } = {
   z: '🦊',
 };
 
-class Hsl {
-  constructor(public h: number, public s: number, public l: number) {
-    this.h = h;
-    this.s = s;
-    this.l = l;
-  }
-
-  get str() {
-    return `hsl(${this.h}, ${this.s}%, ${this.l}%)`;
-  }
-
-  get textColor() {
-    const l = this.l > 50 ? 10 : 90;
-    const s = this.s > 50 ? 40 : 60;
-    return new Hsl(this.h, s, l);
-  }
-
-  get darker() {
-    return new Hsl(this.h, this.s, this.l - 15);
-  }
-}
-
 export const colors: { [key: string]: Hsl } = {
   rojo: new Hsl(0, 50, 50),
   naranja: new Hsl(26, 100, 53),
@@ -89,3 +69,17 @@ export const colors: { [key: string]: Hsl } = {
   blanco: new Hsl(0, 0, 100),
   gris: new Hsl(0, 0, 50),
 };
+
+export function adaptLetter(key: string) {
+  if (key === 'b') {
+    return 'be larga';
+  } else if (key === 'v') {
+    return 've corta';
+  } else if (key === 'w') {
+    return 'doblebé';
+  } else if (key === 'y') {
+    return 'y griega';
+  } else {
+    return key;
+  }
+}
