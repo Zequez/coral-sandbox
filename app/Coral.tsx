@@ -1,4 +1,4 @@
-import { JSX } from 'preact';
+import { JSX, createRef } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import { letters, colors, adaptLetter } from './config';
 import { useSpeech } from './lib/speech';
@@ -14,7 +14,11 @@ const Coral = () => {
   );
   const [showLetterDisplay, setShowLetterDisplay] = useState(false);
   const [lettersIndexes, setLettersIndexes] = useState<{ [key: string]: number }>({});
-  const [caretPosition, setCaretPosition] = useState<number | null>(val.length - 1);
+  const [caretPosition, setCaretPosition] = useState<number>(val.length - 1);
+  // const [scrollPosition, setScrollPosition]= useState(0);
+
+  const textareaRef = createRef<HTMLTextAreaElement>();
+  const textareaOverlayRef = createRef<HTMLDivElement>();
 
   useEffect(() => {
     window.addEventListener('keydown', (ev) => {
@@ -38,12 +42,7 @@ const Coral = () => {
 
   function processCaretPosition(el: HTMLTextAreaElement) {
     const start = el.selectionStart;
-    const end = el.selectionEnd;
-    if (start === end) {
-      setCaretPosition(start);
-    } else {
-      setCaretPosition(null);
-    }
+    setCaretPosition(start);
   }
 
   function onMouseUp(ev: MouseEvent) {
@@ -55,6 +54,9 @@ const Coral = () => {
     if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
     if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].indexOf(ev.key) !== -1) {
       processCaretPosition(ev.target);
+    }
+    if (textareaOverlayRef.current && textareaRef.current) {
+      textareaOverlayRef.current.scrollTop = textareaRef.current.scrollTop;
     }
   }
 
@@ -113,7 +115,7 @@ const Coral = () => {
     } else if (key === 'tab') {
       return;
     } else if (key === 'enter') {
-      const lines = ev.target.value.split('\n');
+      const lines = ev.target.value.slice(0, caretPosition).split('\n');
       const filledLines = lines.filter((l) => l.trim().length > 0);
       const lastLine = filledLines.pop();
       if (lastLine) {
@@ -143,28 +145,43 @@ const Coral = () => {
           backgroundColor: hsl.str,
           color: hsl.textColor.str,
         }}
+        ref={textareaRef}
         onInput={onInputChange}
         onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
         onMouseUp={onMouseUp}
+        onScroll={(ev) => {
+          if (textareaOverlayRef.current) {
+            textareaOverlayRef.current.scrollTop = ev.currentTarget.scrollTop;
+          }
+        }}
         value={val}
       ></textarea>
-      <div className="pointer-events-none p-2 absolute top-0 w-screen h-5/6 uppercase font-mono tracking-2 text-7xl overflow-auto break-all whitespace-pre-wrap">
-        <span className="text-transparent">{val.slice(0, caretPosition || 0)}</span>
-        <span
-          style={{
-            color: hsl.textColor.str,
-          }}
-          className="relative opacity-50"
-        >
-          _
-          <div
+      <div
+        style={{
+          overflowWrap: 'break-word',
+          whiteSpace: 'pre-wrap',
+        }}
+        ref={textareaOverlayRef}
+        class="pointer-events-none p-2 absolute top-0 w-screen h-5/6 uppercase font-mono tracking-2 text-7xl overflow-auto"
+      >
+        <span className="text-transparent">
+          {val.slice(0, caretPosition || 0)}
+          <span
             style={{
-              backgroundColor: hsl.textColor.str,
-              borderColor: hsl.textColor.darker.str,
+              color: hsl.textColor.str,
             }}
-            class="absolute inset-0 border-l-4 border-2 border-black border-solid rounded-md"
-          ></div>
+            className="relative opacity-50"
+          >
+            _
+            <span
+              style={{
+                backgroundColor: hsl.textColor.str,
+                borderColor: hsl.textColor.darker.str,
+              }}
+              class="block absolute inset-0 border-l-4 border-2 border-black border-solid rounded-md"
+            ></span>
+          </span>
         </span>
       </div>
       <div
