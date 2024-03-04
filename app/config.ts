@@ -60,11 +60,16 @@ export const emojis: { [key: string]: string } = {
 
 export const colors: { [key: string]: Hsl } = {
   rojo: new Hsl(0, 50, 50),
+  marrón: new Hsl(34, 50, 30),
   naranja: new Hsl(26, 100, 53),
   amarillo: new Hsl(50, 100, 60),
-  verde: new Hsl(73, 54, 41),
+  'verde claro': new Hsl(73, 54, 41),
+  'verde oscuro': new Hsl(77, 84, 22),
   azul: new Hsl(204, 50, 50),
+  celeste: new Hsl(176, 100, 82),
   violeta: new Hsl(297, 100, 27),
+  lila: new Hsl(331, 24, 65),
+  rosa: new Hsl(0, 100, 85),
   negro: new Hsl(0, 0, 0),
   blanco: new Hsl(0, 0, 100),
   gris: new Hsl(0, 0, 50),

@@ -38,6 +38,10 @@ const Coral = () => {
     if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
     let key = ev.key.toLowerCase();
 
+    // const rect = ev.target.getBoundingClientRect();
+    // console.log(rect, ev.target.selectionStart, ev.target.selectionEnd);
+    // ev.target.getBoundingClientRect();
+
     async function speakSingleLetter(letter: string) {
       setLastLetter(letter);
 
