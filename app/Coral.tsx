@@ -219,7 +219,7 @@ const Coral = () => {
       </div>
       <div
         className="h-1/6 text-white text-6xl flex items-center px-8 uppercase overflow-hidden"
-        style={{ backgroundColor: hsl.darker.str }}
+        style={{ backgroundColor: hsl.darker.str, color: hsl.darker.textColor.str }}
       >
         {lastLetter ? (
           <Letter letter={lastLetter} lettersIndexes={lettersIndexes} hidden={!showLetterDisplay} />
