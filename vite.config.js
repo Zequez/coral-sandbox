@@ -1,7 +1,6 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import UnoCSS from 'unocss/vite';
-// import react from "@vitejs/plugin-react";
 import preact from '@preact/preset-vite';
 
 export default defineConfig({
