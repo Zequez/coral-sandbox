@@ -1,6 +1,6 @@
 import { JSX } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
-import { letters, emojis, colors, adaptLetter } from './config';
+import { letters, colors, adaptLetter } from './config';
 import { useSpeech } from './lib/speech';
 
 const Coral = () => {
@@ -13,6 +13,7 @@ const Coral = () => {
     null,
   );
   const [showLetterDisplay, setShowLetterDisplay] = useState(false);
+  const [lettersIndexes, setLettersIndexes] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
     window.addEventListener('keydown', (ev) => {
@@ -38,12 +39,27 @@ const Coral = () => {
     if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
     let key = ev.key.toLowerCase();
 
-    // const rect = ev.target.getBoundingClientRect();
-    // console.log(rect, ev.target.selectionStart, ev.target.selectionEnd);
-    // ev.target.getBoundingClientRect();
-
     async function speakSingleLetter(letter: string) {
-      setLastLetter(letter);
+      setLettersIndexes((currentLettersIndexes) => {
+        const newLettersIndexes = { ...currentLettersIndexes };
+        const currentLetterIndex = newLettersIndexes[letter];
+
+        if (typeof currentLetterIndex === 'undefined') {
+          newLettersIndexes[letter] = 0;
+        } else if (letters[letter][currentLetterIndex + 1]) {
+          newLettersIndexes[letter] = currentLetterIndex + 1;
+        } else {
+          newLettersIndexes[letter] = 0;
+        }
+
+        const adaptedLetter = adaptLetter(letter);
+        const currentLetter = letters[letter][newLettersIndexes[letter]];
+
+        speak(`${adaptedLetter}, de ${currentLetter.pronunciation}`);
+
+        setLastLetter(letter);
+        return newLettersIndexes;
+      });
 
       if (lastLetterTimeout) {
         clearTimeout(lastLetterTimeout);
@@ -54,11 +70,9 @@ const Coral = () => {
           setShowLetterDisplay(false);
         }, 3000),
       );
-
-      const adaptedLetter = adaptLetter(letter);
-      await speak(`${adaptedLetter}, de ${letters[letter]}`);
     }
 
+    console.log(key);
     if (key === 'Escape') {
       if (val !== '') {
         setVal('');
@@ -80,7 +94,6 @@ const Coral = () => {
       const lastLine = filledLines.pop();
       if (lastLine) {
         const dLastLine = lastLine.toLowerCase();
-        console.log('LAST LINIE', dLastLine, dLastLine.length);
         if (letters[dLastLine]) {
           await speakSingleLetter(dLastLine);
         } else {
@@ -114,23 +127,43 @@ const Coral = () => {
         style={{ backgroundColor: hsl.darker.str }}
       >
         {lastLetter ? (
-          <div
-            className="flex items-center w-full transition-opacity"
-            style={{ opacity: showLetterDisplay ? '1' : '0' }}
-          >
-            <span>{lastLetter}</span>
-            &nbsp;
-            <span className="opacity-50 text-4xl">DE</span>
-            &nbsp;
-            <span className="flex-grow">{letters[lastLetter]}</span>
-            <span className="text-9xl">{emojis[lastLetter]}</span>
-          </div>
-        ) : (
-          ''
-        )}
+          <Letter letter={lastLetter} lettersIndexes={lettersIndexes} hidden={!showLetterDisplay} />
+        ) : null}
       </div>
     </div>
   );
 };
+
+function Letter({
+  letter,
+  lettersIndexes,
+  hidden,
+}: {
+  letter: string;
+  lettersIndexes: { [key: string]: number };
+  hidden: boolean;
+}) {
+  const letterIndex = lettersIndexes[letter];
+  const letterDisplay = letters[letter][letterIndex];
+  return (
+    <div
+      className="flex items-center w-full transition-opacity"
+      style={{ opacity: hidden ? '0' : '1' }}
+    >
+      <span>{letter}</span>
+      &nbsp;
+      <span className="opacity-50 text-4xl">DE</span>
+      &nbsp;
+      <span className="flex-grow">{letterDisplay.word}</span>
+      {letterDisplay.photo ? (
+        <span className="h-full w-28 flex-shrink-0">
+          <img src={letterDisplay.photo} className="h-full w-full rounded-md" />
+        </span>
+      ) : (
+        <span className="text-9xl">{letterDisplay.emoji}</span>
+      )}
+    </div>
+  );
+}
 
 export default Coral;
