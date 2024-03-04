@@ -3,6 +3,8 @@ import { useState, useEffect } from 'preact/hooks';
 import { letters, colors, adaptLetter, symbols, numbers } from './config';
 import { useSpeech } from './lib/speech';
 import useTimedDisplay from './lib/useTimedDisplay';
+import WebcamFeed from './components/WebcamFeed';
+import MicrophoneFeed from './components/MicrophoneFeed';
 
 const Coral = () => {
   const { speak } = useSpeech('es-AR');
@@ -16,12 +18,15 @@ const Coral = () => {
   const [showNumberDisplay, setShowNumberDisplay] = useTimedDisplay(2500);
   const [lettersIndexes, setLettersIndexes] = useState<{ [key: string]: number }>({});
   const [caretPosition, setCaretPosition] = useState<number>(val.length - 1);
+  const [showCamera, setShowCamera] = useState(false);
+  const [showMicrophone, setShowMicrophone] = useState(false);
 
   const textareaRef = createRef<HTMLTextAreaElement>();
   const textareaOverlayRef = createRef<HTMLDivElement>();
 
   useEffect(() => {
     window.addEventListener('keydown', (ev) => {
+      console.log(ev.key);
       if (ev.key === 'Tab') {
         ev.preventDefault();
         setColor((prevColor) => {
@@ -31,6 +36,16 @@ const Coral = () => {
           speak(nextColor);
           setShowColorDisplay();
           return nextColor;
+        });
+      } else if (ev.key === 'Help') {
+        setShowCamera((prevVal) => {
+          setShowMicrophone(false);
+          return !prevVal;
+        });
+      } else if (ev.key === 'PageUp') {
+        setShowMicrophone((prevVal) => {
+          setShowCamera(false);
+          return !prevVal;
         });
       }
     });
@@ -223,6 +238,20 @@ const Coral = () => {
               ))}
             </div>
           </div>
+        </div>
+      ) : null}
+      {showCamera ? (
+        <div class="absolute inset-0 p-12 flex items-center justify-center">
+          <div class="w-full h-full">
+            <WebcamFeed />
+          </div>
+        </div>
+      ) : null}
+      {showMicrophone ? (
+        <div class="absolute inset-0 p-12 flex items-center justify-center">
+          {/* <div class="w-full h-full"> */}
+          <MicrophoneFeed />
+          {/* </div> */}
         </div>
       ) : null}
     </div>
