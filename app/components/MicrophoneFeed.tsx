@@ -93,7 +93,7 @@ const MicrophoneFeed: FunctionalComponent = () => {
     };
   }, []);
 
-  return <canvas ref={canvasRef} width={800} height={800} class="rounded-md bg-black"></canvas>;
+  return <canvas ref={canvasRef} width={800} height={800} class="bg-black h-full w-full"></canvas>;
 };
 
 export default MicrophoneFeed;

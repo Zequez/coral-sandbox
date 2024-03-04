@@ -31,7 +31,11 @@ const WebcamFeed = () => {
     };
   }, []);
 
-  return <video ref={videoRef} autoPlay playsInline class="h-full w-full"></video>;
+  return (
+    <div class="h-full w-full bg-black flex items-center justify-center">
+      <video ref={videoRef} autoPlay playsInline class="h-full w-full"></video>
+    </div>
+  );
 };
 
 export default WebcamFeed;
