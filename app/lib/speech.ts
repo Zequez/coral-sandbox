@@ -49,7 +49,6 @@ export async function speak(val: string) {
   }
 
   if (synth.speaking || synth.pending) {
-    console.log('Speech pending, cancelling, speaking in 250ms');
     synth.cancel();
     timeout = setTimeout(() => {
       speak(val);
@@ -65,4 +64,8 @@ export async function speak(val: string) {
 
     return promisifiedUtrrance(utterance);
   }
+}
+
+export function useSpeech(lang: string) {
+  return { speak };
 }
