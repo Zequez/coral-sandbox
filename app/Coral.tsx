@@ -99,10 +99,10 @@ const Coral = () => {
       );
     }
 
-    if (key === 'Escape') {
+    if (key === 'escape') {
       if (val !== '') {
         setVal('');
-        speak('Borrando todo');
+        speak('Borro todo');
       }
     } else if (key === ',') {
       speak('coma');
@@ -112,6 +112,8 @@ const Coral = () => {
       speak('barra');
     } else if (key === ' ') {
       speak('espacio');
+    } else if (key === ':') {
+      speak('dos puntos');
     } else if (key === 'tab') {
       return;
     } else if (key === 'enter') {
@@ -129,6 +131,8 @@ const Coral = () => {
       }
     } else if (letters[key]) {
       await speakSingleLetter(key);
+    } else if (key.length === 1) {
+      await speak(key);
     } else {
       return;
     }
