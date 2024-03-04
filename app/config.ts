@@ -131,6 +131,33 @@ export const lettersPronunciations: { [key: string]: string } = {
   y: 'y griega',
 };
 
+export const symbols: { [key: string]: string } = {
+  '.': 'punto',
+  ',': 'coma',
+  '/': 'barra',
+  '\\': 'barra invertida',
+  ':': 'dos puntos',
+  ' ': 'espacio',
+  '[': 'corchete abre',
+  ']': 'corchete cierra',
+  "'": 'comilla',
+  ';': 'punto y coma',
+  '=': 'igual',
+  '-': 'menos, o guión',
+};
+
 export function adaptLetter(key: string) {
   return lettersPronunciations[key] || key;
 }
+
+export const numbers: { [key: string]: string } = {
+  1: getPhoto('numbers/1.webp'),
+  2: getPhoto('numbers/2.webp'),
+  3: getPhoto('numbers/3.webp'),
+  4: getPhoto('numbers/4.webp'),
+  5: getPhoto('numbers/5.webp'),
+  6: getPhoto('numbers/6.webp'),
+  7: getPhoto('numbers/7.webp'),
+  8: getPhoto('numbers/8.webp'),
+  9: getPhoto('numbers/9.webp'),
+};

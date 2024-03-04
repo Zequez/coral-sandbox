@@ -1,7 +1,8 @@
 import { JSX, createRef } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
-import { letters, colors, adaptLetter } from './config';
+import { letters, colors, adaptLetter, symbols, numbers } from './config';
 import { useSpeech } from './lib/speech';
+import useTimedDisplay from './lib/useTimedDisplay';
 
 const Coral = () => {
   const { speak } = useSpeech('es-AR');
@@ -9,16 +10,12 @@ const Coral = () => {
   const [val, setVal] = useState('CORAL');
   const [color, setColor] = useState<string>('rojo');
   const [lastLetter, setLastLetter] = useState('');
-  const [lastLetterTimeout, setLastLetterTimeout] = useState<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
-  const [showColorDisplayTimeout, setShowColorDisplayTimeout] = useState<ReturnType<
-    typeof setTimeout
-  > | null>(null);
-  const [showLetterDisplay, setShowLetterDisplay] = useState(false);
+  const [showColorDisplay, setShowColorDisplay] = useTimedDisplay(2500);
+  const [showLetterDisplay, setShowLetterDisplay, cancelShowLetterDisplay] = useTimedDisplay(2500);
+  const [lastNumber, setLastNumber] = useState('');
+  const [showNumberDisplay, setShowNumberDisplay] = useTimedDisplay(2500);
   const [lettersIndexes, setLettersIndexes] = useState<{ [key: string]: number }>({});
   const [caretPosition, setCaretPosition] = useState<number>(val.length - 1);
-  // const [scrollPosition, setScrollPosition]= useState(0);
 
   const textareaRef = createRef<HTMLTextAreaElement>();
   const textareaOverlayRef = createRef<HTMLDivElement>();
@@ -32,19 +29,7 @@ const Coral = () => {
           const nextColorIndex = colorKeys.indexOf(prevColor) + 1;
           const nextColor = colorKeys[nextColorIndex] ? colorKeys[nextColorIndex] : colorKeys[0];
           speak(nextColor);
-          setShowColorDisplayTimeout((prevTimeout) => {
-            if (prevTimeout) {
-              clearTimeout(prevTimeout);
-            }
-            const thisTimeout = setTimeout(() => {
-              setShowColorDisplayTimeout((currentTimeout) => {
-                if (currentTimeout === thisTimeout) return null;
-                else return currentTimeout;
-              });
-            }, 3000);
-            return thisTimeout;
-          });
-
+          setShowColorDisplay();
           return nextColor;
         });
       }
@@ -101,18 +86,9 @@ const Coral = () => {
         speak(`${adaptedLetter}, de ${currentLetter.pronunciation}`);
 
         setLastLetter(letter);
+        setShowLetterDisplay();
         return newLettersIndexes;
       });
-
-      if (lastLetterTimeout) {
-        clearTimeout(lastLetterTimeout);
-      }
-      setShowLetterDisplay(true);
-      setLastLetterTimeout(
-        setTimeout(() => {
-          setShowLetterDisplay(false);
-        }, 3000),
-      );
     }
 
     if (key === 'escape') {
@@ -120,16 +96,8 @@ const Coral = () => {
         setVal('');
         speak('Borro todo');
       }
-    } else if (key === ',') {
-      speak('coma');
-    } else if (key === '.') {
-      speak('punto');
-    } else if (key === '/') {
-      speak('barra');
-    } else if (key === ' ') {
-      speak('espacio');
-    } else if (key === ':') {
-      speak('dos puntos');
+    } else if (symbols[key]) {
+      speak(symbols[key]);
     } else if (key === 'tab') {
       return;
     } else if (key === 'enter') {
@@ -141,12 +109,16 @@ const Coral = () => {
         if (letters[dLastLine]) {
           await speakSingleLetter(dLastLine);
         } else {
-          setShowLetterDisplay(false);
+          cancelShowLetterDisplay();
           await speak(dLastLine);
         }
       }
     } else if (letters[key]) {
       await speakSingleLetter(key);
+    } else if (numbers[key]) {
+      setShowNumberDisplay();
+      setLastNumber(key);
+      await speak(key);
     } else if (key.length === 1) {
       await speak(key);
     } else {
@@ -225,13 +197,31 @@ const Coral = () => {
           <Letter letter={lastLetter} lettersIndexes={lettersIndexes} hidden={!showLetterDisplay} />
         ) : null}
       </div>
-      {!!showColorDisplayTimeout ? (
+      {showColorDisplay ? (
         <div class="absolute inset-0 flex items-center justify-center">
           <div
             style={{ backgroundColor: hsl.textColor.str, color: hsl.str }}
             class="p-4 rounded-md shadow-lg uppercase text-6xl"
           >
             {color}
+          </div>
+        </div>
+      ) : null}
+      {showNumberDisplay ? (
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div
+            style={{ backgroundColor: hsl.textColor.str, color: hsl.str }}
+            class="p-4 rounded-md shadow-lg uppercase w-1/3"
+          >
+            <img src={numbers[lastNumber]} class="w-full rounded-md" />
+            <div class="flex items-center justify-center mt-3 flex-wrap">
+              {Array.apply(null, Array(parseInt(lastNumber) || 0)).map((_, i) => (
+                <span
+                  class="w-4 h-4 mx-1 mt-1 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: hsl.str }}
+                ></span>
+              ))}
+            </div>
           </div>
         </div>
       ) : null}
