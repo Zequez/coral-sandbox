@@ -14,6 +14,7 @@ const Coral = () => {
   );
   const [showLetterDisplay, setShowLetterDisplay] = useState(false);
   const [lettersIndexes, setLettersIndexes] = useState<{ [key: string]: number }>({});
+  const [caretPosition, setCaretPosition] = useState<number | null>(val.length - 1);
 
   useEffect(() => {
     window.addEventListener('keydown', (ev) => {
@@ -35,8 +36,34 @@ const Coral = () => {
     setVal(ev.target.value);
   }
 
+  function processCaretPosition(el: HTMLTextAreaElement) {
+    const start = el.selectionStart;
+    console.log('Sel start', start);
+    const end = el.selectionEnd;
+    if (start === end) {
+      setCaretPosition(start);
+    } else {
+      setCaretPosition(null);
+    }
+  }
+
+  function onMouseUp(ev: MouseEvent) {
+    if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
+    processCaretPosition(ev.target);
+  }
+
+  async function onKeyDown(ev: KeyboardEvent) {
+    if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
+    console.log('Key down!', ev.key);
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].indexOf(ev.key) !== -1) {
+      processCaretPosition(ev.target);
+    }
+  }
+
   async function onKeyUp(ev: KeyboardEvent) {
     if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
+    processCaretPosition(ev.target);
+
     let key = ev.key.toLowerCase();
 
     async function speakSingleLetter(letter: string) {
@@ -113,15 +140,36 @@ const Coral = () => {
   return (
     <div className="h-screen w-screen">
       <textarea
-        className="p-2 block w-screen h-5/6 uppercase text-7xl tracking-2 font-mono"
+        autofocus
+        className="p-2 block w-screen h-5/6 uppercase text-7xl tracking-2 font-mono outline-none"
         style={{
           backgroundColor: hsl.str,
           color: hsl.textColor.str,
         }}
         onInput={onInputChange}
+        onKeyDown={onKeyDown}
         onKeyUp={onKeyUp}
+        onMouseUp={onMouseUp}
         value={val}
       ></textarea>
+      <div className="pointer-events-none p-2 absolute top-0 w-screen h-5/6 uppercase font-mono tracking-2 text-7xl overflow-auto break-all whitespace-pre-wrap">
+        <span className="text-transparent">{val.slice(0, caretPosition || 0)}</span>
+        <span
+          style={{
+            color: hsl.textColor.str,
+          }}
+          className="relative opacity-50"
+        >
+          _
+          <div
+            style={{
+              backgroundColor: hsl.textColor.str,
+              borderColor: hsl.textColor.darker.str,
+            }}
+            class="absolute inset-0 border-l-4 border-2 border-black border-solid rounded-md"
+          ></div>
+        </span>
+      </div>
       <div
         className="h-1/6 text-white text-6xl flex items-center px-8 uppercase overflow-hidden"
         style={{ backgroundColor: hsl.darker.str }}
