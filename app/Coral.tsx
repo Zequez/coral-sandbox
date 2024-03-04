@@ -38,7 +38,6 @@ const Coral = () => {
 
   function processCaretPosition(el: HTMLTextAreaElement) {
     const start = el.selectionStart;
-    console.log('Sel start', start);
     const end = el.selectionEnd;
     if (start === end) {
       setCaretPosition(start);
@@ -54,7 +53,6 @@ const Coral = () => {
 
   async function onKeyDown(ev: KeyboardEvent) {
     if (!(ev.target instanceof HTMLTextAreaElement)) throw 'Nope';
-    console.log('Key down!', ev.key);
     if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].indexOf(ev.key) !== -1) {
       processCaretPosition(ev.target);
     }
@@ -99,7 +97,6 @@ const Coral = () => {
       );
     }
 
-    console.log(key);
     if (key === 'Escape') {
       if (val !== '') {
         setVal('');
