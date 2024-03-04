@@ -12,6 +12,9 @@ const Coral = () => {
   const [lastLetterTimeout, setLastLetterTimeout] = useState<ReturnType<typeof setTimeout> | null>(
     null,
   );
+  const [showColorDisplayTimeout, setShowColorDisplayTimeout] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
   const [showLetterDisplay, setShowLetterDisplay] = useState(false);
   const [lettersIndexes, setLettersIndexes] = useState<{ [key: string]: number }>({});
   const [caretPosition, setCaretPosition] = useState<number>(val.length - 1);
@@ -29,6 +32,19 @@ const Coral = () => {
           const nextColorIndex = colorKeys.indexOf(prevColor) + 1;
           const nextColor = colorKeys[nextColorIndex] ? colorKeys[nextColorIndex] : colorKeys[0];
           speak(nextColor);
+          setShowColorDisplayTimeout((prevTimeout) => {
+            if (prevTimeout) {
+              clearTimeout(prevTimeout);
+            }
+            const thisTimeout = setTimeout(() => {
+              setShowColorDisplayTimeout((currentTimeout) => {
+                if (currentTimeout === thisTimeout) return null;
+                else return currentTimeout;
+              });
+            }, 3000);
+            return thisTimeout;
+          });
+
           return nextColor;
         });
       }
@@ -141,7 +157,7 @@ const Coral = () => {
   const hsl = colors[color];
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen relative">
       <textarea
         autofocus
         className="p-2 block w-screen h-5/6 uppercase text-7xl tracking-2 font-mono outline-none"
@@ -196,6 +212,16 @@ const Coral = () => {
           <Letter letter={lastLetter} lettersIndexes={lettersIndexes} hidden={!showLetterDisplay} />
         ) : null}
       </div>
+      {!!showColorDisplayTimeout ? (
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div
+            style={{ backgroundColor: hsl.textColor.str, color: hsl.str }}
+            class="p-4 rounded-md shadow-lg uppercase text-6xl"
+          >
+            {color}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
