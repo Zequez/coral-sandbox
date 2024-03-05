@@ -35,6 +35,7 @@ const ColorTextEditor = () => {
       }
     };
     window.addEventListener('keydown', listener);
+    textareaRef.current!.focus();
     return () => {
       window.removeEventListener('keydown', listener);
     };
