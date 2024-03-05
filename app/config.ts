@@ -34,7 +34,6 @@ export const letters: LetterRelations = {
     R('barco', '⛵️'),
     R('bicicleta', '🚲'),
     R('banana', '🍌'),
-    R('rana', '🐸'),
     R('bolsa', '🛍'),
     R('ballena', '🐋'),
     R('berenjena', '🍆'),
@@ -91,7 +90,7 @@ export const letters: LetterRelations = {
     R('pantalón', '👖'),
   ],
   q: [R('quirquincho', 'quirquincho.jpg'), R('queso', '🧀'), R('quinoa', 'quinoa.jpg')],
-  r: [R('rueda', '🛞'), R('ratón', '🐀'), R('rama', 'rama.jpg'), R('remera', '👕')],
+  r: [R('rueda', '🛞'), R('ratón', '🐀'), R('rama', 'rama.jpg'), R('remera', '👕'), R('rana', '🐸')],
   s: [R('sol', 'sol.jpg'), R('sandía', '🍉'), R('sapo', 'sapo.jpg')],
   t: [
     R('tierra', 'tierra.jpg'),
