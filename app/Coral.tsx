@@ -2,9 +2,10 @@ import { useState, useEffect } from 'preact/hooks';
 import WebcamFeed from './components/WebcamFeed';
 import MicrophoneFeed from './components/MicrophoneFeed';
 import ColorTextEditor from './components/ColorTextEditor';
+import Pinta from './components/Pinta';
 
 const Coral = () => {
-  const [mode, setMode] = useState<'colorTextEditor' | 'camera' | 'microphone'>('colorTextEditor');
+  const [mode, setMode] = useState<'colorTextEditor' | 'camera' | 'microphone' | 'pinta'>('pinta');
 
   useEffect(() => {
     const listener = (ev: KeyboardEvent) => {
@@ -32,7 +33,9 @@ const Coral = () => {
         <MicrophoneFeed />
       ) : mode === 'colorTextEditor' ? (
         <ColorTextEditor />
-      ) : null}
+      ) : (
+        <Pinta />
+      )}
     </div>
   );
 };

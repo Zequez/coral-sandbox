@@ -4,7 +4,7 @@
   "description": "A sandbox web app for my son Coral to explore computering in a simple environment",
   "main": "index.js",
   "scripts": {
-    "dev": "vite --port 7777",
+    "dev": "vite --port 7777 --host 0.0.0.0",
     "build": "vite build",
     "test": "vitest"
   },
