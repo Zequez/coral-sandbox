@@ -6,6 +6,7 @@ type Square = {
 };
 
 const Pinta = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [squaresSize, setSquaresSize] = useState(0);
   const [squareHeightAdjust, setSquareHeightAdjust] = useState(0);
   const [squaresX, setSquaresX] = useState(0);
@@ -88,44 +89,46 @@ const Pinta = () => {
         setSquares((squares) => {
           const head = squares.slice(0, squareIndex);
           const tail = squares.slice(squareIndex + 1);
-          return [...head, { classNames: 'bg-white' }, ...tail];
+          return [...head, { classNames: 'bg-red-500 ' }, ...tail];
         });
       }
     }
   }, [posX, posY, squaresX, isPainting]);
 
   return (
-    <div id="canvas" class="h-screen w-screen bg-gray-900 text-white">
-      {squaresX && squaresY
-        ? Array(...new Array(squaresY)).map((_, y) => (
-            <div class="flex">
-              {Array(...new Array(squaresX)).map((_, x) => {
-                const isHighlightedSquare = posX === x && posY === y;
-                const currentSquare = squares[x + y * squaresX]!;
-                return (
-                  <div
-                    class={`relative ${currentSquare.classNames}`}
-                    style={{
-                      boxShadow: 'inset 0 0 1px #fff5',
-                      width: `${squaresSize}px`,
-                      height: `${squaresSize + squareHeightAdjust}px`,
-                    }}
-                  >
-                    {isHighlightedSquare ? (
-                      <div
-                        class={cx('absolute inset-2 rounded-full', {
-                          'bg-red-500/25': !isPainting,
-                          'bg-red-500/50': isPainting,
-                        })}
-                      ></div>
-                    ) : null}
-                  </div>
-                );
-              })}
-            </div>
-          ))
-        : null}
-    </div>
+    <>
+      <div id="canvas" class="h-screen w-screen bg-gray-900 text-white">
+        {squaresX && squaresY
+          ? Array(...new Array(squaresY)).map((_, y) => (
+              <div class="flex">
+                {Array(...new Array(squaresX)).map((_, x) => {
+                  const isHighlightedSquare = posX === x && posY === y;
+                  const currentSquare = squares[x + y * squaresX]!;
+                  return (
+                    <div
+                      class={`relative ${currentSquare.classNames}`}
+                      style={{
+                        boxShadow: 'inset 0 0 1px #fff5',
+                        width: `${squaresSize}px`,
+                        height: `${squaresSize + squareHeightAdjust}px`,
+                      }}
+                    >
+                      {isHighlightedSquare ? (
+                        <div
+                          class={cx('absolute inset-2 rounded-full', {
+                            'bg-blue-500/25': !isPainting,
+                            'bg-blue-500/50': isPainting,
+                          })}
+                        ></div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            ))
+          : null}
+      </div>
+    </>
   );
 };
 
