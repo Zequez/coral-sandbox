@@ -1,8 +1,8 @@
 import { JSX, createRef } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
-import { letters, colors, adaptLetter, symbols, numbers } from '../config';
-import { useSpeech } from '../lib/speech';
-import useTimedDisplay from '../lib/useTimedDisplay';
+import { letters, colors, adaptLetter, symbols, numbers } from '../../config';
+import { useSpeech } from '../../lib/speech';
+import useTimedDisplay from '../../lib/useTimedDisplay';
 
 const ColorTextEditor = () => {
   const { speak } = useSpeech('es-AR');
