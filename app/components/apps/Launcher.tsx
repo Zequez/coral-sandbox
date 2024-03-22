@@ -1,20 +1,6 @@
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import cx from 'classnames';
 import useLocalStorageState from '../../lib/useLocalStorageState';
-// import * as apps from './index';
-
-// const appsNames: Partial<Record<AppType, string>> = {
-//   ColorTextEditor: 'Escribir con colores',
-//   MicrophoneFeed: 'Micrófono',
-//   WebcamFeed: 'Cámara',
-//   Pinta: 'Pinta cuadrados',
-//   PintaCar: 'Auto pintador',
-//   Launcher: 'Selector de apps',
-// };
-
-// type AppType = keyof typeof apps;
-
-// const launchableApps = Object.keys(apps).filter((app) => app !== 'Launcher');
 
 export default function Launcher({
   apps,
