@@ -1,5 +1,6 @@
 import '@unocss/reset/tailwind.css';
 import 'virtual:uno.css';
+import './style.css';
 import { render } from 'preact';
 import System from './System';
 

@@ -4,6 +4,7 @@ import { default as WebcamFeed } from './WebcamFeed';
 import { default as Pinta } from './Pinta';
 import { default as PintaCar } from './PintaCar';
 import { default as Launcher } from './Launcher';
+import { default as Letras } from './Letras';
 
 export const apps = {
   ColorTextEditor: {
@@ -35,5 +36,10 @@ export const apps = {
     name: 'Selector de apps',
     icon: '🔎',
     App: Launcher,
+  },
+  Letras: {
+    name: 'Letras',
+    icon: '🔤',
+    App: Letras,
   },
 };
