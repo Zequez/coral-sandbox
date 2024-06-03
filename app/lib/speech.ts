@@ -52,7 +52,7 @@ export async function speak(val: string) {
     synth.cancel();
     timeout = setTimeout(() => {
       speak(val);
-    }, 250);
+    }, 500);
   } else {
     console.log(`Speaking: ${val}`);
     const voice = await getVoice();

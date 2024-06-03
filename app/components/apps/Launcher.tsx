@@ -57,11 +57,18 @@ export default function Launcher({
           <button
             class={cx(
               'rounded-md px-4 py-2 font-semibold border border-solid border-black/10 shadow-sm transition-transform',
+              'hover:bg-yellow-400 hover:text-white hover:scale-120',
               {
                 'bg-yellow-400 text-white scale-120': app === focusedApp,
                 'bg-white text-black/60': app !== focusedApp,
               },
             )}
+            onClick={() => {
+              setFocusedApp(app);
+              setTimeout(() => {
+                onSelect(app);
+              }, 100);
+            }}
           >
             <span class="text-xl mr-2">{icon}</span>
             {name}

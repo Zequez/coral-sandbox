@@ -35,6 +35,8 @@ const System = () => {
     Pinta: () => <apps.Pinta.App />,
     PintaCar: () => <apps.PintaCar.App />,
     ColorTextEditor: () => <apps.ColorTextEditor.App />,
+    Letras: () => <apps.Letras.App />,
+    PintaMouse: () => <apps.PintaMouse.App />,
   }[mode];
 
   if (!App) {
